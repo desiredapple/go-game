@@ -92,5 +92,22 @@ namespace boardstate
             // тут нужно обновить нынешнее поле, если сруб проходит, убрать срубленные камни
 
         }
+
+        private bool WouldViolateKo(int x, int y, StoneColor color)
+        {
+            // клонируем текущее поле
+            var temp = CreateEmptyField(_size);
+            CopyField(_field, temp);
+
+            // ставим камень на клоне, симулируем ход
+            temp[x][y] = color == StoneColor.Black ? 1 : 2;
+            // тут нужна проверка сруба
+
+            // сравниваем с позапрошлым
+            return FieldsEqual(tempField, _prePreviousField);
+        }
     }
-}
+
+    
+    
+    
