@@ -48,6 +48,22 @@ namespace Game_go
             squareH = cHeight / (n - 1);
             stones = new Ellipse[n + 1, n + 1];
 
+            //Здесь будет происходить смена текста в окне и цвета камней в зависимости от ходящего игрока
+            /*
+            if (turn == "black")
+            {
+                TurnStatus.Text = "Ходят черные";
+                TurnStatus.Foreground = Brushes.Black;
+                color = Brushes.Black;
+            }
+            else
+            {
+                TurnStatus.Text = "Ходят белые";
+                TurnStatus.Foreground = Brushes.White;
+                color = Brushes.WhiteSmoke
+            }
+            */
+
             canvas.MouseLeftButtonDown += AddStone;
 
             // Вертикальные линии
@@ -76,13 +92,8 @@ namespace Game_go
             {
                 char letter = (char)('A' + i);
 
-                TextBlock label = new TextBlock
-                {
-                    Text = letter.ToString(),
-                    FontSize = 12,
-                    FontWeight = FontWeights.Bold,
-                    Foreground = Brushes.Black
-                };
+                TextBlock label = new TextBlock { Text = letter.ToString(), FontSize = 12, FontWeight = FontWeights.Bold, Foreground = Brushes.Black };
+
                 label.Measure(new Size(canvas.Height, canvas.Width));
                 Canvas.SetLeft(label, i * squareW - label.DesiredSize.Width / 2);
                 Canvas.SetTop(label, -squareH - 5);
@@ -92,13 +103,8 @@ namespace Game_go
             // Разметка по строкам
             for (int i = 0; i < n; i++)
             {
-                TextBlock label = new TextBlock
-                {
-                    Text = (n - i).ToString(),
-                    FontSize = 12,
-                    FontWeight = FontWeights.Bold,
-                    Foreground = Brushes.Black
-                };
+                TextBlock label = new TextBlock { Text = (n - i).ToString(), FontSize = 12, FontWeight = FontWeights.Bold, Foreground = Brushes.Black };
+
                 label.Measure(new Size(canvas.Height, canvas.Width));
                 Canvas.SetLeft(label, -squareW - 5);
                 Canvas.SetTop(label, i * squareH - label.DesiredSize.Height / 2);
@@ -112,7 +118,7 @@ namespace Game_go
             //Получение номера узла
             int xIndex = (int)Math.Round(coords.X / squareW);
             int yIndex = (int)Math.Round(coords.Y / squareH);
-            
+
             //Получение данных на сколько отклонен клик от узла
             double xMod = coords.X % squareW;
             double yMod = coords.Y % squareH;
@@ -143,10 +149,8 @@ namespace Game_go
             string winner = "";
             string message = $"Игра окончена! \nЧерные: {blackScore} очков \nБелые: {whiteScore} очков \nПобедили: {winner}";
             */
-            //Вот так это будет выглядить
             string message = $"Игра окончена! \nЧерные: 0 очков \nБелые: 0 очков \nПобедили: Черные";
             MessageBox.Show(message, "Конец партии", MessageBoxButton.OK);
-            
             //Обнуление доски и ее отрисовка заново
             ViewboxBoard.Child = null;
             DrawBoard();
