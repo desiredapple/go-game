@@ -14,6 +14,21 @@ namespace boardstate
         private int[][] _previousField;
         private int[][] _prePreviousField;
 
+        // нужен size из класса Board.cs
+        public BoardState(BoardSize size)
+        {
+            _size = size switch
+            {
+                BoardSize.Ultrasmall => 5,
+                BoardSize.Small => 7,
+                BoardSize.Medium => 15,
+                _ => 19,
+            };
+            _field = CreateEmptyField(_size);
+            _previousField = CreateEmptyField(_size);
+            _prePreviousField = CreateEmptyField(_size);
+        }
+
         // копирование доски
         private static void CopyField(int[][] source, int[][] clone)
         {
