@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
@@ -37,6 +38,8 @@ namespace Game_go
             canvas.Height = 400;
             canvas.Width = 400;
             canvas.Background = Brushes.Peru;
+            canvas.Margin = new Thickness(40);
+
             ViewboxBoard.Child = canvas;
 
             double cWidth = canvas.Width;
@@ -132,6 +135,21 @@ namespace Game_go
                 stones[xIndex, yIndex] = stone;
             }
         }
-
+        private void EndGame(object sender, RoutedEventArgs e)
+        {
+            /*
+            int blackScore = ;
+            int whiteScore = ;
+            string winner = "";
+            string message = $"Игра окончена! \nЧерные: {blackScore} очков \nБелые: {whiteScore} очков \nПобедили: {winner}";
+            */
+            //Вот так это будет выглядить
+            string message = $"Игра окончена! \nЧерные: 0 очков \nБелые: 0 очков \nПобедили: Черные";
+            MessageBox.Show(message, "Конец партии", MessageBoxButton.OK);
+            
+            //Обнуление доски и ее отрисовка заново
+            ViewboxBoard.Child = null;
+            DrawBoard();
+        }
     }
 }
