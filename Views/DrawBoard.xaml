@@ -21,7 +21,7 @@
             </Grid.ColumnDefinitions>
 
             <Viewbox Grid.Column="0" Stretch="Uniform" Margin="5" HorizontalAlignment="Left">
-                <TextBlock x:Name="TurnStatus" Text="Ходят черные"/>
+                <TextBlock x:Name="TurnStatus" Text="Ходят черные" Foreground="Black"/>
             </Viewbox>
 
             <Viewbox Grid.Column="1" Stretch="Uniform" Margin="5" HorizontalAlignment="Right">
