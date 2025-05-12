@@ -1,7 +1,8 @@
 public enum StoneColor : byte
 {
     White,
-    Black
+    Black,
+    None
 }
 
 namespace Stone
@@ -26,8 +27,8 @@ namespace Stone
         {
             get => _x;
         }
+        
         private readonly StoneColor _color;
         private int _x;
         private int _y;
-    }
 }
