@@ -18,11 +18,12 @@ namespace Game_go
     /// </summary>
     public partial class MainWindow : Window
     {
-        int n = 18;
-        Viewbox viewbox;
+        private int n = 19;
         Canvas canvas;
-        double squareW;
-        double squareH;
+        private double squareW;
+        private double squareH;
+        private Ellipse[,] stones; //Пробный массив камней
+        private Brush color = Brushes.WhiteSmoke; //Пробный цвет
 
         public MainWindow()
         {
@@ -35,36 +36,40 @@ namespace Game_go
             canvas = new Canvas();
             canvas.Height = 400;
             canvas.Width = 400;
+            canvas.Background = Brushes.Peru;
             ViewboxBoard.Child = canvas;
 
             double cWidth = canvas.Width;
             double cHeight = canvas.Height;
-            squareW = cWidth / n;
-            squareH = cHeight / n;
+            squareW = cWidth / (n - 1);
+            squareH = cHeight / (n - 1);
+            stones = new Ellipse[n + 1, n + 1];
+
+            canvas.MouseLeftButtonDown += AddStone;
 
             // Вертикальные линии
-            for (int i = 0; i <= n; i++)
+            for (int i = 0; i < n; i++)
             {
                 var yStart = 0;
-                var yEnd = cWidth;
-                var x = i * squareH;
+                var yEnd = cHeight;
+                var x = i * squareW;
                 Line line = new Line { X1 = x, X2 = x, Y1 = yStart, Y2 = yEnd, Stroke = Brushes.Black };
                 canvas.Children.Add(line);
             }
-            
+
             // Горизонтальные линии
-            for (int i = 0; i <= n; i++)
+            for (int i = 0; i < n; i++)
             {
                 var xStart = 0;
-                var xEnd = cHeight;
-                var y = i * squareW;
+                var xEnd = cWidth;
+                var y = i * squareH;
 
-                Line line = new Line { X1 = xEnd, X2 = xStart, Y1 = y, Y2 = y, Stroke = Brushes.Black };
+                Line line = new Line { X1 = xStart, X2 = xEnd, Y1 = y, Y2 = y, Stroke = Brushes.Black };
                 canvas.Children.Add(line);
             }
-            
+
             // Разметка по столбцам
-            for (int i = 0; i <= n; i++)
+            for (int i = 0; i < n; i++)
             {
                 char letter = (char)('A' + i);
 
@@ -77,25 +82,56 @@ namespace Game_go
                 };
                 label.Measure(new Size(canvas.Height, canvas.Width));
                 Canvas.SetLeft(label, i * squareW - label.DesiredSize.Width / 2);
-                Canvas.SetTop(label, -squareH * 1.2);
+                Canvas.SetTop(label, -squareH - 5);
                 canvas.Children.Add(label);
             }
 
             // Разметка по строкам
-            for (int i = 0; i <= n ; i++)
+            for (int i = 0; i < n; i++)
             {
                 TextBlock label = new TextBlock
                 {
-                    Text = (n + 1 - i).ToString(),
+                    Text = (n - i).ToString(),
                     FontSize = 12,
                     FontWeight = FontWeights.Bold,
                     Foreground = Brushes.Black
                 };
                 label.Measure(new Size(canvas.Height, canvas.Width));
-                Canvas.SetLeft(label, -squareW * 1.2);
+                Canvas.SetLeft(label, -squareW - 5);
                 Canvas.SetTop(label, i * squareH - label.DesiredSize.Height / 2);
                 canvas.Children.Add(label);
             }
         }
+        private void AddStone(object sender, MouseButtonEventArgs e)
+        {
+            Point coords = e.GetPosition(canvas);
+
+            //Получение номера узла
+            int xIndex = (int)Math.Round(coords.X / squareW);
+            int yIndex = (int)Math.Round(coords.Y / squareH);
+            
+            //Получение данных на сколько отклонен клик от узла
+            double xMod = coords.X % squareW;
+            double yMod = coords.Y % squareH;
+
+            //Проверка на выход за пределы доски, существует ли камень на этом узле и дополнительная проверка на дальность отклонения 
+            if (xIndex >= 0 && xIndex <= n && yIndex >= 0 && yIndex <= n && stones[xIndex, yIndex] == null && (Math.Min(xMod, yMod) < squareW * 0.2 || Math.Max(xMod, yMod) > squareW * 0.8))
+            {
+                //Вычисление координат узла
+                double stoneSize = squareW * 0.75;
+                double xPos = xIndex * squareW - stoneSize / 2;
+                double yPos = yIndex * squareH - stoneSize / 2;
+
+                //Создание и вставка камня в канвас
+                Ellipse stone = new Ellipse { Width = stoneSize, Height = stoneSize, Fill = color, Stroke = Brushes.Black, StrokeThickness = 1 };
+                Canvas.SetLeft(stone, xPos);
+                Canvas.SetTop(stone, yPos);
+                canvas.Children.Add(stone);
+
+                //Добавление камня в массив
+                stones[xIndex, yIndex] = stone;
+            }
+        }
+
     }
 }
