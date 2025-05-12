@@ -34,7 +34,7 @@
 | Никита |   вся остальная логика        |   etc_logic                |
 | Максим |   концовка игры               |   game_end_logic           |
 | Данил  |   логика сруба                |   capture_logic            |
-| Марк   |   класс камней, класс доски   |   stone_logic              |
+| Марк   |   класс камней, класс доски   |   stone_logic, board_logic |
 | Олег   |   data binding                |   binding_graph            |
 | Влад   |   визуал, меню, дизайн        |   interface_graph          |
 
