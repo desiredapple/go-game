@@ -18,6 +18,14 @@ namespace Stone
         {
             get => _color;
         }
+        public int X
+        {
+            get => _x;
+        }
+        public int Y
+        {
+            get => _x;
+        }
         private readonly StoneColor _color;
         private int _x;
         private int _y;
