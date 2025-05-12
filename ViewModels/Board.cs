@@ -14,22 +14,23 @@ namespace Board
     {
         public Board(BoardSize size)
         {
-            switch (size)
+            InitializeBoard(size);
+        }
+        private Stone[,] field;
+
+        void InitializeBoard(Boardsize size)
+        {
+            field = new Stone[size,size];
+
+            for (int x = 0; x < size; x++)
             {
-                case BoardSize.Ultrasmall:
-                    field = new int[5][5];
-                    break;
-                case BoardSize.Small:
-                    field = new int[7][7];
-                    break;
-                case BoardSize.Medium:
-                    field = new int[15][15];
-                    break;
-                case BoardSize.Default:
-                    field = new int[19][19];
-                    break;
+                for (int y = 0; y < size; y++)
+                {
+                    field[x,y].X = x;
+                    field[x,y].Y = y;
+                    field[x,y].IsDead = true; //изначально камушек мертвый(
+                }
             }
         }
-        private int field[][];
     }
 }
