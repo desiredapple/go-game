@@ -1,47 +1,21 @@
-public enum StoneColor : byte
+public enum CellStatus : byte
 {
+    Black,
     White,
-    Black
+    Empty
 }
 
-namespace Stone
+namespace GoGame.Models
 {
     public class Stone
     {
-        public static int _globalMoveCounter = 0;
-
-        // конструктор нового камня, без параметров, координаты выставляются в PlaceStone
         public Stone()
         {
-            _color = (_globalMoveCounter % 2 == 0)
-                    ? StoneColor.Black
-                    : StoneColor.White;
-
-            // пока координаты фиктивные, сначала нужно проверить легальность хода
-            _x = -1;
-            _y = -1;
+            //Некоторая переменная i, отвечающая за нумерацию ходов. Т. к. черные начинают первые, то
+            //четные ходы делают черные, нечетные — белые
+            // _color = i % 2 ? StoneColor.White : StoneColor.Black;
         }
-        public StoneColor Color
-        {
-            get => _color;
-        }
-        public int X
-        {
-            get => _x;
-        }
-        public int Y
-        {
-            get => _x;
-        }
-        // функция для выставления координатов камня после проверки легальности хода
-        public void SetPosition(int x, int y)
-        {
-            _x = x;
-            _y = y;
-            _globalMoveCounter++;
-        }
-
-        private readonly StoneColor _color;
+        private readonly CellStatus _status;
         private int _x;
         private int _y;
     }
