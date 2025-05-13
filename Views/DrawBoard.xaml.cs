@@ -9,7 +9,7 @@ namespace GoGame.Views
 {
     public partial class MainWindow : Window
     {
-        private int _size = 19;
+        private int _size = 19; //размер сетки
         private Canvas _canvas;
         private double _squareW;
         private double _squareH;
@@ -29,7 +29,7 @@ namespace GoGame.Views
                 Height = 400,
                 Width = 400,
                 Background = Brushes.Peru,
-                Margin = new Thickness(40)
+                Margin = new Thickness(400 / (_size - 1) * 1.5)
             };
 
             ViewboxBoard.Child = _canvas;
@@ -87,14 +87,14 @@ namespace GoGame.Views
                 TextBlock label = new()
                 {
                     Text = letter.ToString(),
-                    FontSize = 12,
+                    FontSize = 12 + _squareH * 0.1,
                     FontWeight = FontWeights.Bold,
                     Foreground = Brushes.Black
                 };
 
                 label.Measure(new Size(_canvas.Height, _canvas.Width));
                 Canvas.SetLeft(label, i * _squareW - label.DesiredSize.Width / 2);
-                Canvas.SetTop(label, -_squareH - 5);
+                Canvas.SetTop(label, -_squareH * 1.4);
                 _canvas.Children.Add(label);
             }
 
@@ -104,13 +104,13 @@ namespace GoGame.Views
                 TextBlock label = new()
                 {
                     Text = (_size - i).ToString(),
-                    FontSize = 12,
+                    FontSize = 12 + _squareW * 0.1,
                     FontWeight = FontWeights.Bold,
                     Foreground = Brushes.Black
                 };
 
                 label.Measure(new Size(_canvas.Height, _canvas.Width));
-                Canvas.SetLeft(label, -_squareW - 5);
+                Canvas.SetLeft(label, -_squareW * 1.4);
                 Canvas.SetTop(label, i * _squareH - label.DesiredSize.Height / 2);
                 _canvas.Children.Add(label);
             }
@@ -129,7 +129,7 @@ namespace GoGame.Views
 
             //Проверка на выход за пределы доски, существует ли камень на этом узле и дополнительная проверка на
             //дальность отклонения
-            if (xIndex >= 0 && xIndex <= _size && yIndex >= 0 && yIndex <= _size && _stones[xIndex, yIndex] == null &&
+            if (xIndex >= 0 && xIndex < _size && yIndex >= 0 && yIndex < _size && _stones[xIndex, yIndex] == null &&
                 (Math.Min(xMod, yMod) < _squareW * 0.2 || Math.Max(xMod, yMod) > _squareW * 0.8))
             {
                 //Вычисление координат узла
