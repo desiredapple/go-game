@@ -18,31 +18,13 @@ namespace Board
         }
         private Stone[,] field;
 
-        void InitializeBoard(Boardsize boardsize)
+        private void InitializeBoard(Boardsize boardsize)
         {
 
 
-            int size;
+            int size = boardsize.GetSize();
 
-            switch (boardsize)
-            {
-                case BoardSize.Ultrasmall:
-                    size = 5;
-                    break;
-                case BoardSize.Small:
-                    size = 7;
-                    break;
-                case BoardSize.Medium:
-                    size = 15;
-                    break;
-                case BoardSize.Default:
-                    size = 19;
-                    break;  
-                default:
-                    return;
-
-
-            }
+            
 
             field = new Stone[size,size];
 
@@ -53,6 +35,27 @@ namespace Board
                     field[x,y].X = x;
                     field[x,y].Y = y;
                     field[x,y].IsDead = true; //изначально камушек мертвый(
+                }
+            }
+        }
+
+        public Pair<float,float> ScoringPoints(Boardsize boardsize)
+        {
+            int size = boardsize.GetSize();
+            int blackStones = 0;
+            int whiteStones = 0;
+            int blackTerritory = 0;
+            int whiteTerritory = 0;
+
+            var visited = new bool[BoardSize, BoardSize];
+
+            // Подсчет камней на доске
+            for (int x = 0; x < size; y++)
+            {
+                for (int y = 0; x < size; x++)
+                {
+                    if (field[x, y].Color == StoneColor.Black) blackStones++;
+                    else if (field[x, y].Color == StoneColor.White) whiteStones++;
                 }
             }
         }
