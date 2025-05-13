@@ -12,8 +12,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Game_go
+namespace GameGo.Views
 {
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
     public partial class MainWindow : Window
     {
         private int n = 19;
@@ -29,7 +32,7 @@ namespace Game_go
             DrawBoard();
         }
 
-        private void DrawBoard()
+        public void DrawBoard()
         {
             canvas = new Canvas();
             canvas.Height = 400;
