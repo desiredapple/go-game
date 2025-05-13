@@ -39,7 +39,7 @@ namespace Board
             }
         }
 
-        public Pair<float,float> ScoringPoints(Boardsize boardsize)
+        public (blackScore,whiteScore) ScoringPoints(Boardsize boardsize)
         {
             int size = boardsize.GetSize();
             int blackStones = 0;
@@ -50,14 +50,25 @@ namespace Board
             var visited = new bool[BoardSize, BoardSize];
 
             // Подсчет камней на доске
-            for (int x = 0; x < size; y++)
+            for (int x = 0; x < size; x++)
             {
-                for (int y = 0; x < size; x++)
+                for (int y = 0; x < size; y++)
                 {
                     if (field[x, y].Color == StoneColor.Black) blackStones++;
                     else if (field[x, y].Color == StoneColor.White) whiteStones++;
                 }
             }
+
+
+            //нужна будет допфункция анализа территории BFS промт инженеринг подсказал
+            for (int x = 0;x < size; x++)
+            {
+                for (int y = 0;y < size; y++)
+                {
+
+                }
+            }
+
         }
     }
 }
