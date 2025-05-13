@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Game_go
+namespace GameGo.Views
 {
     public partial class MainWindow : Window
     {
@@ -29,7 +29,7 @@ namespace Game_go
             DrawBoard();
         }
 
-        private void DrawBoard()
+        public void DrawBoard()
         {
             canvas = new Canvas();
             canvas.Height = 400;

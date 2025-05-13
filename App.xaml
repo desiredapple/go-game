@@ -1,5 +1,9 @@
-<Application x:Class="GoGame.DrawBoard"
+﻿<Application x:Class="GoGame.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:GoGame"
              StartupUri="Views/DrawBoard.xaml">
+    <Application.Resources>
+         
+    </Application.Resources>
 </Application>
