@@ -1,9 +1,17 @@
 using System;
 using GoGame.Models;
 
+// количество клеток на доске, используется для инициализации класса Board
+public enum BoardSize : byte
+{
+    Ultrasmall,     // 5x5
+    Small,          // 7x7
+    Medium,         // 15x15
+    Default         // 19x19
+}
+
 namespace GoGame.ViewModels;
 
-public class Board
 {
     private CellStatus[][] _field;
     private CellStatus[][] _previousField;
