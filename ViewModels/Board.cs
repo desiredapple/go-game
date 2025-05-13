@@ -18,8 +18,32 @@ namespace Board
         }
         private Stone[,] field;
 
-        void InitializeBoard(Boardsize size)
+        void InitializeBoard(Boardsize boardsize)
         {
+
+
+            int size;
+
+            switch (boardsize)
+            {
+                case BoardSize.Ultrasmall:
+                    size = 5;
+                    break;
+                case BoardSize.Small:
+                    size = 7;
+                    break;
+                case BoardSize.Medium:
+                    size = 15;
+                    break;
+                case BoardSize.Default:
+                    size = 19;
+                    break;  
+                default:
+                    return;
+
+
+            }
+
             field = new Stone[size,size];
 
             for (int x = 0; x < size; x++)
