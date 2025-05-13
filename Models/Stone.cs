@@ -4,7 +4,7 @@ public enum StoneColor : byte
     Black
 }
 
-namespace Stone
+namespace GoGame.Models
 {
     public class Stone
     {
@@ -12,19 +12,7 @@ namespace Stone
         {
             //Некоторая переменная i, отвечающая за нумерацию ходов. Т. к. черные начинают первые, то
             //четные ходы делают черные, нечетные — белые
-            //color = i % 2 ? StoneColor.White : StoneColor.Black;
-        }
-        public StoneColor Color
-        {
-            get => _color;
-        }
-        public int X
-        {
-            get => _x;
-        }
-        public int Y
-        {
-            get => _x;
+            // _color = i % 2 ? StoneColor.White : StoneColor.Black;
         }
         private readonly StoneColor _color;
         private int _x;

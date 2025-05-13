@@ -2,9 +2,11 @@
 
 namespace GoGame;
 
-public partial class MainWindow : Window
+public
+partial class MainWindow : Window
 {
-    public MainWindow()
+  public
+    MainWindow()
     {
         InitializeComponent();
     }

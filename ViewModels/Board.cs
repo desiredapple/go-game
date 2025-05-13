@@ -1,5 +1,5 @@
 // количество клеток на доске, используется для инициализации класса Board
-public enum BoardSize : byte 
+public enum BoardSize : byte
 {
     Ultrasmall,     // 5x5
     Small,          // 7x7
@@ -8,7 +8,7 @@ public enum BoardSize : byte
 }
 
 
-namespace Board
+namespace GoGame.ViewModels
 {
     public class Board
     {
