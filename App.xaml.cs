@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace GameGo;
+namespace GoGame;
 
 public partial class App : Application
 {
