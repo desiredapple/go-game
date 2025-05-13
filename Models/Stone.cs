@@ -13,6 +13,8 @@ namespace GoGame.Models
         private int _x;
         private int _y;
 
+        public CellStatus Status { get { return _status; } }
+
         public Stone()
         {
             //_status = (_globalMoveCounter % 2 == 0)
