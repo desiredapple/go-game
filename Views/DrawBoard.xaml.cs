@@ -102,7 +102,6 @@ public partial class MainWindow : Window
             label.Measure(new Size(_canvas.Height, _canvas.Width));
             Canvas.SetLeft(label, -_squareW * 1.4);
             Canvas.SetTop(label, i * _squareH - label.DesiredSize.Height / 2);
-            _canvas.Children.Add(label);
         }
     }
     private void AddStone(object sender, MouseButtonEventArgs e)
