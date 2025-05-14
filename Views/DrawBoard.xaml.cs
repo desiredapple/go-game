@@ -170,6 +170,7 @@ public partial class MainWindow : Window
                                                      $"{(blackScore > whiteScore ? " черные" : " белые")}";
         MessageBox.Show(message, "Конец партии", MessageBoxButton.OK);
         //Обнуление доски и ее отрисовка заново
+
         _board = new(_size);
         _canvas = new Canvas
         {
@@ -178,6 +179,7 @@ public partial class MainWindow : Window
             Background = Brushes.Peru,
             Margin = new Thickness(400 / (_size - 1) * 1.5)
         };
+
         DrawBoard();
         Turn();
     }

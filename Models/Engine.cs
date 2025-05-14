@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System;
 
 namespace GoGame.Models;
+
 public static class Engine
 {
     public static void RemoveCapturedStones(Board board, Stone currentStone)
     {
-        StoneColor opponentStone = currentStone.Status == StoneColor.Black ? StoneColor.White : StoneColor.Black; //записываем противоположным цвет от данного
+        StoneColor opponentStone = currentStone.Status == StoneColor.Black ? StoneColor.White : StoneColor.Black; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         var stonesToRemove = new List<Tuple<int, int>>();
 
         bool[,] visited = new bool[board.Size, board.Size];
@@ -16,10 +17,10 @@ public static class Engine
         {
             for (int y = 0; y < board.Size; ++y)
             {
-                if (board[x, y] != null && board[x, y].Status == opponentStone && !visited[x, y]) //если камень на доске прот цвета и не посещен
+                if (board[x, y] != null && board[x, y].Status == opponentStone && !visited[x, y]) //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 {
                     List<Tuple<int, int>> group = [];
-                    if (!HasLiberties(board, x, y, opponentStone, visited, group)) //смотрим если у конкретного камней ДЫХАНИЕ см правила
+                    if (!HasLiberties(board, x, y, opponentStone, visited, group)) //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                     {
                         stonesToRemove.AddRange(group);
                     }
@@ -49,7 +50,7 @@ public static class Engine
         group.Add(new Tuple<int, int>(x, y));
 
         bool hasLiberty = false;
-        //если есть хотя бы одно дыхание в соседнях клетка
+        //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         hasLiberty |= HasLiberties(board, x + 1, y, status, visited, group);
         hasLiberty |= HasLiberties(board, x - 1, y, status, visited, group);
         hasLiberty |= HasLiberties(board, x, y + 1, status, visited, group);
