@@ -12,37 +12,38 @@ namespace Board
 {
     public class Board
     {
-        public Board(BoardSize size)
+        public Board(BoardSize _size)
         {
-            InitializeBoard(size);
+            InitializeBoard(_size);
         }
         private Stone[,] field;
+        private int _size;
 
         private void InitializeBoard(Boardsize boardsize)
         {
 
 
-            int size = boardsize.GetSize();
+            
 
             
 
-            field = new Stone[size,size];
+            field = new Stone[_size,_size];
 
-            for (int x = 0; x < size; x++)
+            for (int x = 0; x < _size; x++)
             {
-                for (int y = 0; y < size; y++)
+                for (int y = 0; y < _size; y++)
                 {
                     field[x,y].X = x;
                     field[x,y].Y = y;
-                    field[x,y].IsDead = true; //изначально пересечение пустое
+                     //изначально пересечение пустое
                 }
             }
         }
 
         //скорее всего позже уйдет под другой класс
-        public (blackScore,whiteScore) ScoringPoints(Boardsize boardsize)
+        public (float blackScore,float whiteScore) ScoringPoints(Boardsize boardsize)
         {
-            int size = boardsize.GetSize();
+            
             int blackStones = 0;
             int whiteStones = 0;
             int blackTerritory = 0;
@@ -50,10 +51,10 @@ namespace Board
 
             var visited = new bool[BoardSize, BoardSize];
 
-            // Подсчет камней на доске
-            for (int x = 0; x < size; x++)
+            // Подсчет камней на доске каждого цвета
+            for (int x = 0; x < _size; x++)
             {
-                for (int y = 0; x < size; y++)
+                for (int y = 0; x < _size; y++)
                 {
                     if (field[x, y].Color == StoneColor.Black) blackStones++;
                     else if (field[x, y].Color == StoneColor.White) whiteStones++;
@@ -62,9 +63,9 @@ namespace Board
 
 
             //нужна будет допфункция анализа территории BFS промт инженеринг подсказал
-            for (int x = 0;x < size; x++)
+            for (int x = 0;x < _size; x++)
             {
-                for (int y = 0;y < size; y++)
+                for (int y = 0;y < _size; y++)
                 {
                     if (!_field[x, y].IsDead || visited[x, y]) continue;
                     //если мы были уже в клетке ИЛИ она умерла
@@ -82,6 +83,56 @@ namespace Board
 
             return (blackScore, whiteScore);
 
+        }
+
+
+        private (StoneColor territoryColor,int size) AnalyzeTerritory(int x, int y, bool[][] visited) //теку
+        {
+            var queue = new Queue<(int , int y)>();
+            queue = queue.Enqueue((x, y));
+            visited[x, y] = true;
+
+            StoneColor borderColor = StoneColor.None;
+            int territorySize = 0;
+            
+            //обход территории, BFS - поиск в ширину
+            while (queue.Count > 0)
+            {
+                var (currentX, currentY) = queue.Dequeue();
+                territorySize++;
+
+                //проверка все соседних точек   
+                foreach (var (dx, dy) in new[] { (-1, 0), (1, 0), (0, -1), (0, 1) })
+                {
+                    int nx = currentX + dx;
+                    int ny = currentY + dy;
+
+                    //проверка выхода за границу доски
+                    if (nx < 0 || nx >= _size || ny<0 || ny >= _size) continue;
+
+                    if (field[nx, ny] != StoneColor.None)
+                    {
+                        if (borderColor == StoneColor.None)
+                        {
+                            borderColor = field[nx, ny].Color; //меняем на первый встреченный цвет
+                        }
+                        else if (borderColor != _stones[nx, ny].Color)
+                        {
+                            return (StoneColor.None);
+                        }
+                    }
+
+                    //если сосед - None color и не посещен
+                    else if (!visited[nx, ny])
+                    {
+                        visited[nx, ny] = true;
+                        queue.Enqueue((nx, ny));
+                    }
+                }
+            }
+
+
+            return (borderColor, territorySize);
         }
     }
 }

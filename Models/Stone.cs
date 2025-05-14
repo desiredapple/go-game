@@ -2,6 +2,7 @@
     {
         White,
         Black,
+        None
     }
 
     namespace Stone
@@ -14,7 +15,7 @@
                 //Некоторая переменная i, отвечающая за нумерацию ходов. Т. к. черные начинают первые, то
                 //четные ходы делают черные, нечетные — белые
                 //color = i % 2 ? StoneColor.White : StoneColor.Black;
-                IsDead = false;
+                
                 
             }
             public StoneColor Color
@@ -30,7 +31,7 @@
                 get => _x;
             }
             
-            public bool IsDead { get; set; } //проверка на поле ли камень/жив ли он
+      
 
             private readonly StoneColor _color;
             private int _x;
