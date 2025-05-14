@@ -1,6 +1,6 @@
 namespace GoGame.Models;
 
-public enum CellStatus : byte
+public enum StoneColor : byte
 {
     Black,
     White,
