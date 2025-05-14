@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,9 +12,9 @@ namespace GoGame.Views;
 public partial class MainWindow : Window
 {
     private int _size = 19; //размер сетки
-    private Canvas _canvas;
     private double _squareW;
     private double _squareH;
+    private Canvas _canvas;
     private Ellipse[,] _stones; //Пробный массив камней
     private Board _board;
     public Brush _color => (_board.MoveCounter % 2 == 0) ? Brushes.Black : Brushes.White;
@@ -24,12 +23,12 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        _board = new();
-        DataContext = _board;
+        _board = new(19);
         DrawBoard();
     }
     private void DrawBoard()
     {
+        DataContext = _board;
         _canvas = new Canvas
         {
             Height = 400,
@@ -134,7 +133,6 @@ public partial class MainWindow : Window
                 Width = stoneSize,
                 Height = stoneSize,
                 Fill = _color,
-                Stroke = Brushes.Black,
                 StrokeThickness = 1
             };
             Canvas.SetLeft(circle, x);
@@ -143,6 +141,7 @@ public partial class MainWindow : Window
 
             //Добавление камня в массив
             _stones[xIndex, yIndex] = circle;
+            //_board[x, y] = stone;
             _board.MoveCounter += 1;
         }
     }
@@ -152,6 +151,6 @@ public partial class MainWindow : Window
         MessageBox.Show(message, "Конец партии", MessageBoxButton.OK);
         //Обнуление доски и ее отрисовка заново
         ViewboxBoard.Child = null;
-        _board = new();
+        _board = new(19);
     }
 }
