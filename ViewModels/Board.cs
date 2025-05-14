@@ -1,5 +1,6 @@
 using GoGame.Models;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace GoGame.ViewModels;
@@ -7,14 +8,13 @@ namespace GoGame.ViewModels;
 public class Board : INotifyPropertyChanged
 {
     private int _size;
-    private Stone[][] __field;
+    private Stone[][] _field;
     private Stone[][] _previousField;
     private Stone[][] _prePreviousField;
+    private static double Komi = 7.5;
     public int _moveCounter = 0;
     public event PropertyChangedEventHandler PropertyChanged;
     public int Size { get { return _size; } }
-
-    private static const float Komi = 7.5f;  //число доп очков, которое белые получают за то что черные ходят первые
 
     public Stone this[int x, int y]
     {
@@ -76,11 +76,9 @@ public class Board : INotifyPropertyChanged
         CopyField(_field, _previousField);
     }
 
-
-
-    public (blackScore, whiteScore) ScoringPoints()
+    public (double blackScore, double whiteScore) ScoringPoints()
     {
-        
+
         int blackStones = 0;
         int whiteStones = 0;
         int blackTerritory = 0;
@@ -89,22 +87,23 @@ public class Board : INotifyPropertyChanged
         var visited = new bool[_size, _size];
 
         // Подсчет камней на доске
-        for (int x = 0; x < _size; x++)
+        for (int x = 0; x < _size; ++x)
         {
-            for (int y = 0; x < _size; y++)
+            for (int y = 0; y < _size; ++y)
             {
-                if (_field[x, y].Status == CellStatus.Black) blackStones++;
-                else if (_field[x, y].Status == CellStatus.White) whiteStones++;
+                if (_field[x][y] != null)
+                {
+                    if (_field[x][y].Status == CellStatus.Black) blackStones++;
+                    else if (_field[x][y].Status == CellStatus.White) whiteStones++;
+                }
             }
         }
 
-
-        
-        for (int x = 0; x < _size; x++)
+        for (int x = 0; x < _size; ++x)
         {
-            for (int y = 0; y < _size; y++)
+            for (int y = 0; y < _size; ++y)
             {
-                if (_field[x, y].Status != CellStatus.Empty || visited[x, y]) continue;
+                if (_field[x][y] != null || visited[x, y]) continue;
                 //если мы были уже в клетке ИЛИ она не пустая
 
                 var (territoryColor, sizeofTerr) = AnalyzeTerritory(x, y, visited); //приватный метод вычисляющий цвет захваченной территории и ее размер
@@ -115,19 +114,19 @@ public class Board : INotifyPropertyChanged
             }
         }
 
-        float blackScore = blackTerritory;
-        float whiteScore = whiteTerritory + Komi;
+        double blackScore = 361 - blackTerritory;
+        double whiteScore = whiteTerritory + Komi;
 
         return (blackScore, whiteScore);
 
     }
-    private (CellStatus territoryColor, int sizeofTerr) AnalyzeTerritory(int x, int y, bool[][] visited) 
+    private (CellStatus territoryColor, int sizeofTerr) AnalyzeTerritory(int x, int y, bool[,] visited)
     {
         var queue = new Queue<(int, int)>();
-        queue = queue.Enqueue((x, y));
+        queue.Enqueue((x, y));
         visited[x, y] = true;
 
-        CellStatus borderColor = CellStatus.Empty;
+        CellStatus borderColor = CellStatus.Black;
         int territorySize = 0;
 
         //обход территории, BFS - поиск в ширину
@@ -145,16 +144,9 @@ public class Board : INotifyPropertyChanged
                 //проверка выхода за границу доски
                 if (nx < 0 || nx >= _size || ny < 0 || ny >= _size) continue;
 
-                if (_field[nx, ny] != CellStatus.Empty)
+                if (_field[nx][ny] != null)
                 {
-                    if (borderColor == CellStatus.Empty)
-                    {
-                        borderColor = _field[nx, ny].Status; //меняем на первый встреченный цвет
-                    }
-                    else if (borderColor != _field[nx, ny].Status)
-                    {
-                        return (CellStatus.Empty, 0);
-                    }
+                        borderColor = _field[nx][ny].Status; //меняем на первый встреченный цвет
                 }
 
                 //если сосед has Empty SellStatus и не посещен
@@ -168,5 +160,6 @@ public class Board : INotifyPropertyChanged
 
 
         return (borderColor, territorySize);
+
     }
 }

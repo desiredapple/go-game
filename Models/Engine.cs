@@ -1,46 +1,34 @@
 using GoGame.ViewModels;
+using System.Collections.Generic;
+using System;
 
 namespace GoGame.Models;
-public class Engine
+public static class Engine
 {
-    //public void PlaceStone(Board board, Stone stone, int x, int y)
-    //{
-    //    //if (WouldViolateKo(board, stone.Status, x, y))
-    //    //throw new InvalidOperationException("ГЌГ Г°ГіГёГҐГ­ГЁГҐ ГЇГ°Г ГўГЁГ«Г  ГЉГ®");
-    //    board.SaveHistory();
-    //    board[x, y] = new Stone(board.MoveCounter % 2 == 0 ? CellStatus.Black : CellStatus.White, x, y);
-    //}
-
     //private bool WouldViolateKo(Board board, CellStatus status, int x, int y)
     //{
-    //var temp = board.CreateEmptyField(board.Size);
-    //board.CopyField(_field, temp);
-    //temp[x][y] = new Stone();
-    //return board.FieldsAreEqual(tempField, _prePreviousField);
+    //    var temp = board.CreateEmptyField(board.Size);
+    //    board.CopyField(_field, temp);
+    //    temp[x][y] = new Stone();
+    //    return board.FieldsAreEqual(tempField, _prePreviousField);
     //}
 
-
-
-    //СѓРґР°Р»РµРЅРёРµ РєР°РјРЅРµР№ Р‘Р•Р— Р”Р«РҐРђРќРРЇ
-    public void RemoveCapturedStones(Stone currentStone)
+    //удаление КаМнЕй БЕЗ ДЫХАНИЯ
+    public static void RemoveCapturedStones(Board board,Stone currentStone)
     {
-        int size = 19; //РїРѕСЃС‚Р°РІРёС‚СЊ СЂР°Р·РјРµСЂ РїРѕР»СЏ
+        CellStatus opponentStone = currentStone.Status == CellStatus.Black ? CellStatus.White : CellStatus.Black; //записываем противоположным цвет от данного
+        var stonesToRemove = new List<Tuple<int, int>>();
 
-        
-        CellStatus opponentStone = currentStone.Status == CellStatus.Black ? CellStatus.White : CellStatus.Black; //Р·Р°РїРёСЃС‹РІР°РµРј РїСЂРѕС‚РёРІРѕРїРѕР»РѕР¶РЅС‹Рј С†РІРµС‚ РѕС‚ РґР°РЅРЅРѕРіРѕ
-        List<Tuple<int, int>> stonesToRemove = new List<Tuple<int, int>>();
+        bool[,] visited = new bool[board.Size, board.Size]; //
 
-        bool[,] visited = new bool[size, size]; //
-
-        for (int i = 0; i < size; i++)
+        for (int x = 0; x < board.Size; ++x)
         {
-            for (int j = 0; j < size; j++)
+            for (int y = 0; y < board.Size; ++y)
             {
-                
-                if (board[i, j].Status == opponentStone && !visited[i, j]) //РµСЃР»Рё РєР°РјРµРЅСЊ РЅР° РґРѕСЃРєРµ РїСЂРѕС‚ С†РІРµС‚Р° Рё РЅРµ РїРѕСЃРµС‰РµРЅ
+                if (board[x, y].Status == opponentStone && !visited[x, y]) //если камень на доске прот цвета и не посещен
                 {
-                    List<Tuple<int, int>> group = new List<Tuple<int, int>>(); 
-                    if (!HasLiberties(i, j, opponentStone, visited, group)) //СЃРјРѕС‚СЂРёРј РµСЃР»Рё Сѓ РєРѕРЅРєСЂРµС‚РЅРѕРіРѕ РєР°РјРЅРµР№ Р”Р«РҐРђРќРР• СЃРј РїСЂР°РІРёР»Р°
+                    List<Tuple<int, int>> group = new List<Tuple<int, int>>();
+                    if (!HasLiberties(board, x, y, opponentStone, visited, group)) //смотрим если у конкретного камней ДЫХАНИЕ см правила
                     {
                         stonesToRemove.AddRange(group);
                     }
@@ -50,17 +38,17 @@ public class Engine
 
         foreach (var stone in stonesToRemove)
         {
-            board[stone.Item1, stone.Item2] = null; //here remove
+            board[stone.Item1, stone.Item2] = null;        
         }
     }
 
-    private bool HasLiberties(int x, int y, CellStatus status, bool[,] visited, List<Tuple<int, int>> group)
+    private static bool HasLiberties(Board board, int x, int y, CellStatus status, bool[,] visited, List<Tuple<int, int>> group)
     {
         int size = 19;
-        if (x < 0 || x >= size || y < 0 || y >= size || visited[x, y]) //visted ok, РЅРѕ РєР°Рє РјС‹ РІС‹Р№РґРµРј Р·Р° РїСЂРµРґРµР»С‹?
+        if (x < 0 || x >= size || y < 0 || y >= size || visited[x, y]) //visted ok, но как мы выйдем за пределы?
             return false;
 
-        if (board[x, y].Status == CellStatus.Empty)
+        if (board[x, y] == null)
             return true;
 
         if (board[x, y].Status != status)
@@ -70,13 +58,12 @@ public class Engine
         group.Add(new Tuple<int, int>(x, y));
 
         bool hasLiberty = false;
-        //РµСЃР»Рё РµСЃС‚СЊ С…РѕС‚СЏ Р±С‹ РѕРґРЅРѕ РґС‹С…Р°РЅРёРµ РІ СЃРѕСЃРµРґРЅСЏС… РєР»РµС‚РєР°
-        hasLiberty |= HasLiberties(x + 1, y, status, visited, group);
-        hasLiberty |= HasLiberties(x - 1, y, status, visited, group);
-        hasLiberty |= HasLiberties(x, y + 1, status, visited, group);
-        hasLiberty |= HasLiberties(x, y - 1, status, visited, group);
+        //если есть хотя бы одно дыхание в соседнях клетка
+        hasLiberty |= HasLiberties(board, x + 1, y, status, visited, group);
+        hasLiberty |= HasLiberties(board, x - 1, y, status, visited, group);
+        hasLiberty |= HasLiberties(board, x, y + 1, status, visited, group);
+        hasLiberty |= HasLiberties(board, x, y - 1, status, visited, group);
 
         return hasLiberty;
     }
-
 }
