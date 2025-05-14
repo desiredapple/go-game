@@ -67,12 +67,13 @@ namespace Board
             {
                 for (int y = 0;y < _size; y++)
                 {
-                    if (!_field[x, y].IsDead || visited[x, y]) continue;
-                    //если мы были уже в клетке ИЛИ она умерла
+                    //если мы были уже в клетке или она не пустая
+                    if (_field[x, y].Color!=StoneColor.None || visited[x, y]) continue;  //
+                    
 
-                    var (territoryColor, size) = AnalyzeTerritory(x, y, visited); //приватный метод вычисляющий цвет захваченной территории и ее размер
-                    if (territoryColor == StoneColor.Black) blackTerritory += size;
-                    else if (territoryColor == StoneColor.White) whiteTerritory += size;
+                    var (territoryColor, sizeOfTerr) = AnalyzeTerritory(x, y, visited); //приватный метод вычисляющий цвет захваченной территории и ее размер
+                    if (territoryColor == StoneColor.Black) blackTerritory += sizeofTerr;
+                    else if (territoryColor == StoneColor.White) whiteTerritory += sizeofTerr;
 
 
                 }
@@ -86,7 +87,7 @@ namespace Board
         }
 
 
-        private (StoneColor territoryColor,int size) AnalyzeTerritory(int x, int y, bool[][] visited) //теку
+        private (StoneColor territoryColor,int sizeofTerr) AnalyzeTerritory(int x, int y, bool[][] visited) //теку
         {
             var queue = new Queue<(int , int y)>();
             queue = queue.Enqueue((x, y));
