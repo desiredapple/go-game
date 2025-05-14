@@ -1,26 +1,25 @@
-namespace GoGame.Models
-{
-    public class Engine
-    {
-        public void PlaceStone(Stone stone, int x, int y)
-        {
-            if (x < 0 || x >= _size || y < 0 || y >= _size)
-                throw new ArgumentOutOfRangeException(nameof(x), "Координаты вне доски");
-            if (_field[x][y] != 0)
-                throw new InvalidOperationException("Клетка уже занята");
-            if (WouldViolateKo(x, y, stone.Color))
-                throw new InvalidOperationException("Нарушение правила Ко");
-            SaveHistory();
-            _field[x][y] = stone.Color == StoneColor.Black ? 1 : 2;
-            stone.SetPosition(x, y);
-        }
+using System;
+using GoGame.ViewModels;
 
-        private bool WouldViolateKo(int x, int y, StoneColor color)
-        {
-            var temp = CreateEmptyField(_size);
-            CopyField(_field, temp);
-            temp[x][y] = color == StoneColor.Black ? 1 : 2;
-            return FieldsEqual(tempField, _prePreviousField);
-        }
+namespace GoGame.Models;
+
+
+public class Engine
+{
+    public void PlaceStone(Board board, Stone stone, int x, int y)
+    {
+        //if (WouldViolateKo(board, stone.Status, x, y))
+            //throw new InvalidOperationException("Нарушение правила Ко");
+        board.SaveHistory();
+        //_field[x][y] = new Stone();
+        stone.SetPosition(x, y);
     }
+
+    //private bool WouldViolateKo(Board board, CellStatus status, int x, int y)
+    //{
+        //var temp = board.CreateEmptyField(board.Size);
+        //board.CopyField(_field, temp);
+        //temp[x][y] = new Stone();
+        //return board.FieldsAreEqual(tempField, _prePreviousField);
+    //}
 }
