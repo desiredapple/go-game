@@ -5,29 +5,20 @@ using System;
 namespace GoGame.Models;
 public static class Engine
 {
-    //private bool WouldViolateKo(Board board, CellStatus status, int x, int y)
-    //{
-    //    var temp = board.CreateEmptyField(board.Size);
-    //    board.CopyField(_field, temp);
-    //    temp[x][y] = new Stone();
-    //    return board.FieldsAreEqual(tempField, _prePreviousField);
-    //}
-
-    //удаление  аћн≈й Ѕ≈« ƒџ’јЌ»я
-    public static void RemoveCapturedStones(Board board,Stone currentStone)
+    public static void RemoveCapturedStones(Board board, Stone currentStone)
     {
-        CellStatus opponentStone = currentStone.Status == CellStatus.Black ? CellStatus.White : CellStatus.Black; //записываем противоположным цвет от данного
+        StoneColor opponentStone = currentStone.Status == StoneColor.Black ? StoneColor.White : StoneColor.Black; //записываем противоположным цвет от данного
         var stonesToRemove = new List<Tuple<int, int>>();
 
-        bool[,] visited = new bool[board.Size, board.Size]; //
+        bool[,] visited = new bool[board.Size, board.Size];
 
         for (int x = 0; x < board.Size; ++x)
         {
             for (int y = 0; y < board.Size; ++y)
             {
-                if (board[x, y].Status == opponentStone && !visited[x, y]) //если камень на доске прот цвета и не посещен
+                if (board[x, y] != null && board[x, y].Status == opponentStone && !visited[x, y]) //если камень на доске прот цвета и не посещен
                 {
-                    List<Tuple<int, int>> group = new List<Tuple<int, int>>();
+                    List<Tuple<int, int>> group = [];
                     if (!HasLiberties(board, x, y, opponentStone, visited, group)) //смотрим если у конкретного камней ƒџ’јЌ»≈ см правила
                     {
                         stonesToRemove.AddRange(group);
@@ -42,10 +33,10 @@ public static class Engine
         }
     }
 
-    private static bool HasLiberties(Board board, int x, int y, CellStatus status, bool[,] visited, List<Tuple<int, int>> group)
+    public static bool HasLiberties(Board board, int x, int y, StoneColor status, bool[,] visited, List<Tuple<int, int>> group)
     {
         int size = 19;
-        if (x < 0 || x >= size || y < 0 || y >= size || visited[x, y]) //visted ok, но как мы выйдем за пределы?
+        if (x < 0 || x >= size || y < 0 || y >= size || visited[x, y])
             return false;
 
         if (board[x, y] == null)

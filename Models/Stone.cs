@@ -2,11 +2,11 @@ namespace GoGame.Models;
 
 public class Stone
 {
-    private readonly CellStatus _status;
+    private readonly StoneColor _status;
 
-    public CellStatus Status { get { return _status; } }
+    public StoneColor Status { get { return _status; } }
 
-    public Stone(CellStatus status)
+    public Stone(StoneColor status)
     {
         _status = status;
     }

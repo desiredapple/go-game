@@ -1,23 +1,23 @@
+using GoGame.Models;
+using GoGame.ViewModels;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using GoGame.Models;
-using GoGame.ViewModels;
 
 namespace GoGame.Views;
 
 public partial class MainWindow : Window
 {
-    private int _size = 19;
+    private readonly int _size = 19;
     private double _squareW;
     private double _squareH;
     private Canvas _canvas;
     private Board _board;
-    public Brush _color => (_board.MoveCounter % 2 == 0) ? Brushes.Black : Brushes.White;
-    public Brush Color { get { return _color; } }
+    public Brush color => (_board.MoveCounter % 2 == 0) ? Brushes.Black : Brushes.White;
+    public Brush Color { get { return color; } }
 
     public MainWindow()
     {
@@ -117,13 +117,10 @@ public partial class MainWindow : Window
         double xMod = coords.X % _squareW;
         double yMod = coords.Y % _squareH;
 
-        if (xIndex >= 0 && xIndex < _size && yIndex >= 0 && yIndex < _size && _board[xIndex, yIndex] == null && 
+        if (xIndex >= 0 && xIndex < _size && yIndex >= 0 && yIndex < _size && _board[xIndex, yIndex] == null &&
             (Math.Min(xMod, yMod) < _squareW * 0.2 || Math.Max(xMod, yMod) > _squareW * 0.8))
         {
-            double stoneSize = _squareW * 0.75;
-            int coordX = (int)(xIndex * _squareW - stoneSize / 2);
-            int coordY = (int)(yIndex * _squareH - stoneSize / 2);
-            Stone stone = new(_color == Brushes.Black ? CellStatus.Black : CellStatus.White);
+            Stone stone = new(color == Brushes.Black ? StoneColor.Black : StoneColor.White);
             _board[xIndex, yIndex] = stone;
             _board.MoveCounter += 1;
             if (TurnStatus.Foreground == Brushes.Black)
@@ -146,6 +143,7 @@ public partial class MainWindow : Window
             {
                 if (_board[x, y] != null)
                 {
+                    Engine.RemoveCapturedStones(_board, _board[x, y]);
                     int coordX = (int)(x * _squareW - _squareW * 0.75 / 2);
                     int coordY = (int)(y * _squareH - _squareH * 0.75 / 2);
                     Ellipse circle = new()
@@ -154,7 +152,7 @@ public partial class MainWindow : Window
                         Height = _squareW * 0.75,
                         StrokeThickness = 1
                     };
-                    if (_board[x, y].Status == CellStatus.Black)
+                    if (_board[x, y].Status == StoneColor.Black)
                         circle.Fill = Brushes.Black;
                     else
                         circle.Fill = Brushes.White;
@@ -167,9 +165,9 @@ public partial class MainWindow : Window
     }
     private void EndGame(object sender, RoutedEventArgs e)
     {
-        var x = _board.ScoringPoints();
-        string message = $"Игра окончена! \nЧерные: {x.blackScore} очков \nБелые: {x.whiteScore} очков \nПобедили:" +
-                                                     $"{(x.blackScore > x.whiteScore ? " черные" : " белые")}";
+        var (blackScore, whiteScore) = _board.ScoringPoints();
+        string message = $"Игра окончена! \nЧерные: {blackScore} очков \nБелые: {whiteScore} очков \nПобедили:" +
+                                                     $"{(blackScore > whiteScore ? " черные" : " белые")}";
         MessageBox.Show(message, "Конец партии", MessageBoxButton.OK);
         //Обнуление доски и ее отрисовка заново
         _board = new(_size);
