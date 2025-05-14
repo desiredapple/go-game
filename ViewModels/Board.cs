@@ -1,139 +1,76 @@
-// количество клеток на доске, используется для инициализации класса Board
-public enum BoardSize : byte 
-{
-    Ultrasmall,     // 5x5
-    Small,          // 7x7
-    Medium,         // 15x15
-    Default         // 19x19
-}
+using GoGame.Models;
+using System;
+using System.ComponentModel;
 
+namespace GoGame.ViewModels;
 
-namespace Board
+public class Board : INotifyPropertyChanged
 {
-    public class Board
+    private int _size;
+    private Stone[][] _field;
+    private Stone[][] _previousField;
+    private Stone[][] _prePreviousField;
+    public int _moveCounter = 0;
+    public event PropertyChangedEventHandler PropertyChanged;
+    public int Size { get { return _size; } }
+
+    public Stone this[int x, int y]
     {
-        public Board(BoardSize _size)
+        get => _field[x][y];
+        set => _field[x][y] = value;
+    }
+
+    public int MoveCounter
+    {
+        get => _moveCounter;
+        set
         {
-            InitializeBoard(_size);
+            _moveCounter = value;
+            OnPropertyChanged(nameof(MoveCounter));
         }
-        private Stone[,] field;
-        private int _size;
+    }
 
-        private void InitializeBoard(Boardsize boardsize)
+    protected void OnPropertyChanged(string name)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+
+    public Board(int size)
+    {
+        _size = size;
+        _field = CreateEmptyField(size);
+        _previousField = CreateEmptyField(size);
+        _prePreviousField = CreateEmptyField(size);
+    }
+
+    public void CopyField(Stone[][] source, Stone[][] clone)
+    {
+        for (int i = 0; i < _size; ++i)
         {
-
-
-            
-
-            
-
-            field = new Stone[_size,_size];
-
-            for (int x = 0; x < _size; x++)
-            {
-                for (int y = 0; y < _size; y++)
-                {
-                    field[x,y].X = x;
-                    field[x,y].Y = y;
-                     //изначально пересечение пустое
-                }
-            }
+            Array.Copy(source[i], clone[i], _size);
         }
+    }
 
-        //скорее всего позже уйдет под другой класс
-        public (float blackScore,float whiteScore) ScoringPoints(Boardsize boardsize)
-        {
-            
-            int blackStones = 0;
-            int whiteStones = 0;
-            int blackTerritory = 0;
-            int whiteTerritory = 0;
+    public static Stone[][] CreateEmptyField(int size)
+    {
+        var f = new Stone[size][];
+        for (int i = 0; i < size; ++i)
+            f[i] = new Stone[size];
+        return f;
+    }
 
-            var visited = new bool[BoardSize, BoardSize];
+    public bool FieldsAreEqual(Stone[][] a, Stone[][] b)
+    {
+        for (int x = 0; x < _size; ++x)
+            for (int y = 0; y < _size; ++y)
+                if (a[x][y] != b[x][y])
+                    return false;
+        return true;
+    }
 
-            // Подсчет камней на доске каждого цвета
-            for (int x = 0; x < _size; x++)
-            {
-                for (int y = 0; x < _size; y++)
-                {
-                    if (field[x, y].Color == StoneColor.Black) blackStones++;
-                    else if (field[x, y].Color == StoneColor.White) whiteStones++;
-                }
-            }
-
-
-            //нужна будет допфункция анализа территории BFS промт инженеринг подсказал
-            for (int x = 0;x < _size; x++)
-            {
-                for (int y = 0;y < _size; y++)
-                {
-                    //если мы были уже в клетке или она не пустая
-                    if (_field[x, y].Color!=StoneColor.None || visited[x, y]) continue;  //
-                    
-
-                    var (territoryColor, sizeOfTerr) = AnalyzeTerritory(x, y, visited); //приватный метод вычисляющий цвет захваченной территории и ее размер
-                    if (territoryColor == StoneColor.Black) blackTerritory += sizeofTerr;
-                    else if (territoryColor == StoneColor.White) whiteTerritory += sizeofTerr;
-
-
-                }
-            }
-
-            float blackScore = blackTerritory + blackStones + _whitePrisoners;
-            float whiteScore = whiteTerritory + whiteStones + _blackPrisoners + Komi;
-
-            return (blackScore, whiteScore);
-
-        }
-
-
-        private (StoneColor territoryColor,int sizeofTerr) AnalyzeTerritory(int x, int y, bool[][] visited) //теку
-        {
-            var queue = new Queue<(int , int y)>();
-            queue = queue.Enqueue((x, y));
-            visited[x, y] = true;
-
-            StoneColor borderColor = StoneColor.None;
-            int territorySize = 0;
-            
-            //обход территории, BFS - поиск в ширину
-            while (queue.Count > 0)
-            {
-                var (currentX, currentY) = queue.Dequeue();
-                territorySize++;
-
-                //проверка все соседних точек   
-                foreach (var (dx, dy) in new[] { (-1, 0), (1, 0), (0, -1), (0, 1) })
-                {
-                    int nx = currentX + dx;
-                    int ny = currentY + dy;
-
-                    //проверка выхода за границу доски
-                    if (nx < 0 || nx >= _size || ny<0 || ny >= _size) continue;
-
-                    if (field[nx, ny] != StoneColor.None)
-                    {
-                        if (borderColor == StoneColor.None)
-                        {
-                            borderColor = field[nx, ny].Color; //меняем на первый встреченный цвет
-                        }
-                        else if (borderColor != _stones[nx, ny].Color)
-                        {
-                            return (StoneColor.None);
-                        }
-                    }
-
-                    //если сосед - None color и не посещен
-                    else if (!visited[nx, ny])
-                    {
-                        visited[nx, ny] = true;
-                        queue.Enqueue((nx, ny));
-                    }
-                }
-            }
-
-
-            return (borderColor, territorySize);
-        }
+    public void SaveHistory()
+    {
+        CopyField(_previousField, _prePreviousField);
+        CopyField(_field, _previousField);
     }
 }
