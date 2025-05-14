@@ -20,7 +20,7 @@
 			</Grid.ColumnDefinitions>
 
 			<Viewbox Grid.Column="0" Stretch="Uniform" Margin="5" HorizontalAlignment="Left">
-                <TextBlock x:Name="TurnStatus" Text="{Binding MoveCounter}" Foreground="{Binding Color}"/>
+                <TextBlock x:Name="TurnStatus" Text="{Binding MoveCounter}" Foreground="Black"/>
 			</Viewbox>
 
 			<Viewbox Grid.Column="1" Stretch="Uniform" Margin="5" HorizontalAlignment="Right">
