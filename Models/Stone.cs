@@ -1,25 +1,17 @@
-public enum CellStatus : byte
-{
-    Black,
-    White,
-    Empty
-}
+namespace GoGame.Models;
 
-namespace GoGame.Models
+public class Stone
 {
-    public class Stone
+    private readonly CellStatus _status;
+    private readonly int _x;
+    private readonly int _y;
+
+    public CellStatus Status { get { return _status; } }
+
+    public Stone(CellStatus status, int x, int y)
     {
-        private readonly CellStatus _status;
-        private int _x;
-        private int _y;
-
-        public CellStatus Status { get { return _status; } }
-
-        public Stone()
-        {
-            //_status = (_globalMoveCounter % 2 == 0)
-            //        ? CellStatus.Black
-            //        : CellStatus.White;
-        }
+        _x = x;
+        _y = y;
+        _status = status;
     }
 }

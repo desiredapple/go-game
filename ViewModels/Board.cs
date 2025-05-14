@@ -1,23 +1,49 @@
-using System;
 using GoGame.Models;
+using System;
+using System.ComponentModel;
 
 namespace GoGame.ViewModels;
 
-public class Board
+public class Board : INotifyPropertyChanged
 {
-    private CellStatus[][] _field;
-    private CellStatus[][] _previousField;
-    private CellStatus[][] _prePreviousField;
     private int _size;
+    private Stone[][] _field;
+    private Stone[][] _previousField;
+    private Stone[][] _prePreviousField;
+    public int _moveCounter = 0;
+    public event PropertyChangedEventHandler PropertyChanged;
+    public int Size { get { return _size; } }
 
-    public Board()
+    public Stone this[int x, int y]
     {
-        _field = CreateEmptyField(_size);
-        _previousField = CreateEmptyField(_size);
-        _prePreviousField = CreateEmptyField(_size);
+        get => _field[x][y];
+        set => _field[x][y] = value;
     }
 
-    private void CopyField(CellStatus[][] source, CellStatus[][] clone)
+    public int MoveCounter
+    {
+        get => _moveCounter;
+        set
+        {
+            _moveCounter = value;
+            OnPropertyChanged(nameof(MoveCounter));
+        }
+    }
+
+    protected void OnPropertyChanged(string name)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+
+    public Board(int size)
+    {
+        _size = size;
+        _field = CreateEmptyField(size);
+        _previousField = CreateEmptyField(size);
+        _prePreviousField = CreateEmptyField(size);
+    }
+
+    public void CopyField(Stone[][] source, Stone[][] clone)
     {
         for (int i = 0; i < _size; ++i)
         {
@@ -25,16 +51,15 @@ public class Board
         }
     }
 
-
-    private CellStatus[][] CreateEmptyField(int size)
+    public static Stone[][] CreateEmptyField(int size)
     {
-        var f = new CellStatus[size][];
-        for (int i = 0; i < size; i++)
-            f[i] = new CellStatus[size];
+        var f = new Stone[size][];
+        for (int i = 0; i < size; ++i)
+            f[i] = new Stone[size];
         return f;
     }
 
-    private bool FieldsEqual(CellStatus[][] a, CellStatus[][] b)
+    public bool FieldsAreEqual(Stone[][] a, Stone[][] b)
     {
         for (int x = 0; x < _size; ++x)
             for (int y = 0; y < _size; ++y)
@@ -43,7 +68,7 @@ public class Board
         return true;
     }
 
-    private void SaveHistory()
+    public void SaveHistory()
     {
         CopyField(_previousField, _prePreviousField);
         CopyField(_field, _previousField);
