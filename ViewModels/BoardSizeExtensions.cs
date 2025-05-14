@@ -1,9 +1,9 @@
-﻿
+﻿using Board
 namespace BoardSizeExtensions
 {
     public static class BoardSizeExtensions
     {
-        public static int GetSize(this BoardSize size)
+        public static int GetSize(BoardSize size)
         {
             return size switch
             {
@@ -11,7 +11,7 @@ namespace BoardSizeExtensions
                 BoardSize.Small => 7,
                 BoardSize.Medium => 15,
                 BoardSize.Default => 19,
-                _ => throw new ArgumentOutOfRangeException(nameof(size), $"Unknown board size: {size}")
+                => throw new ArgumentOutOfRangeException(nameof(size), $"Unknown board size: {size}")
             };
         }
     }

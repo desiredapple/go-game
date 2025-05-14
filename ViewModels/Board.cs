@@ -34,11 +34,12 @@ namespace Board
                 {
                     field[x,y].X = x;
                     field[x,y].Y = y;
-                    field[x,y].IsDead = true; //изначально камушек мертвый(
+                    field[x,y].IsDead = true; //изначально пересечение пустое
                 }
             }
         }
 
+        //скорее всего позже уйдет под другой класс
         public (blackScore,whiteScore) ScoringPoints(Boardsize boardsize)
         {
             int size = boardsize.GetSize();
@@ -65,9 +66,21 @@ namespace Board
             {
                 for (int y = 0;y < size; y++)
                 {
+                    if (!_field[x, y].IsDead || visited[x, y]) continue;
+                    //если мы были уже в клетке ИЛИ она умерла
+
+                    var (territoryColor, size) = AnalyzeTerritory(x, y, visited); //приватный метод вычисляющий цвет захваченной территории и ее размер
+                    if (territoryColor == StoneColor.Black) blackTerritory += size;
+                    else if (territoryColor == StoneColor.White) whiteTerritory += size;
+
 
                 }
             }
+
+            float blackScore = blackTerritory + blackStones + _whitePrisoners;
+            float whiteScore = whiteTerritory + whiteStones + _blackPrisoners + Komi;
+
+            return (blackScore, whiteScore);
 
         }
     }
