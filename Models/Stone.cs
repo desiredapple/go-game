@@ -17,17 +17,11 @@ namespace GoGame.Models
 
         public CellStatus Status { get { return _status; } }
 
-        public Stone()
-        {
-            _status = (Board._globalMoveCounter % 2 == 0)
-                    ? CellStatus.Black
-                    : CellStatus.White;
-        }
-
-        public void SetPosition(int x, int y)
+        public Stone(CellStatus status, int x, int y)
         {
             _x = x;
             _y = y;
+            _status = status;
         }
     }
 }

@@ -1,16 +1,42 @@
-using GoGame.Models;
 using System;
-
+using System.ComponentModel;
+using System.Windows.Media;
+using GoGame.Models;
 
 namespace GoGame.ViewModels;
 
-public class Board
+public class Board : INotifyPropertyChanged
 {
+    private int _size;
     private Stone[][] _field;
     private Stone[][] _previousField;
     private Stone[][] _prePreviousField;
-    private int _size;
-    public static int _globalMoveCounter;
+    public int _moveCounter = 0;
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    public int MoveCounter
+    {
+        get => _moveCounter;
+        set
+        {
+            if (_moveCounter != value)
+            {
+                _moveCounter = value;
+                OnPropertyChanged(nameof(MoveCounter));
+            }
+        }
+    }
+
+    protected void OnPropertyChanged(string name)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+
+    public Stone this[int x, int y]
+    {
+        get => _field[x][y];
+        set => _field[x][y] = value;
+    }
 
     public int Size {  get { return _size; } }
 
@@ -29,8 +55,7 @@ public class Board
         }
     }
 
-
-    public Stone[][] CreateEmptyField(int size)
+    public static Stone[][] CreateEmptyField(int size)
     {
         var f = new Stone[size][];
         for (int i = 0; i < size; ++i)
