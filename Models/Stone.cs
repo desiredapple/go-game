@@ -1,27 +1,17 @@
-using GoGame.ViewModels;
+namespace GoGame.Models;
 
-public enum CellStatus : byte
+public class Stone
 {
-    Black,
-    White,
-    Empty
-}
+    private readonly CellStatus _status;
+    private readonly int _x;
+    private readonly int _y;
 
-namespace GoGame.Models
-{
-    public class Stone
+    public CellStatus Status { get { return _status; } }
+
+    public Stone(CellStatus status, int x, int y)
     {
-        private readonly CellStatus _status;
-        private int _x;
-        private int _y;
-
-        public CellStatus Status { get { return _status; } }
-
-        public Stone(CellStatus status, int x, int y)
-        {
-            _x = x;
-            _y = y;
-            _status = status;
-        }
+        _x = x;
+        _y = y;
+        _status = status;
     }
 }
