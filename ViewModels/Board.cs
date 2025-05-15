@@ -58,7 +58,7 @@ public class Board : INotifyPropertyChanged
 
         var visited = new bool[_size, _size];
 
-        // 1. Подсчет камней на доске
+        // 1. РџРѕРґСЃС‡РµС‚ РєР°РјРЅРµР№ РЅР° РґРѕСЃРєРµ
         for (int x = 0; x < _size; ++x)
         {
             for (int y = 0; y < _size; ++y)
@@ -73,35 +73,35 @@ public class Board : INotifyPropertyChanged
             }
         }
 
-        // 2. Подсчет территорий для пустых клеток
+        // 2. РџРѕРґСЃС‡РµС‚ С‚РµСЂСЂРёС‚РѕСЂРёР№ РґР»СЏ РїСѓСЃС‚С‹С… РєР»РµС‚РѕРє
         for (int x = 0; x < _size; ++x)
         {
             for (int y = 0; y < _size; ++y)
             {
-                if (_field[x][y] == null && !visited[x, y]) // Пустая клетка, еще не посещенная
+                if (_field[x][y] == null && !visited[x, y]) // РџСѓСЃС‚Р°СЏ РєР»РµС‚РєР°, РµС‰Рµ РЅРµ РїРѕСЃРµС‰РµРЅРЅР°СЏ
                 {
-                    // Определяем владельца территории для текущей пустой клетки
+                    // РћРїСЂРµРґРµР»СЏРµРј РІР»Р°РґРµР»СЊС†Р° С‚РµСЂСЂРёС‚РѕСЂРёРё РґР»СЏ С‚РµРєСѓС‰РµР№ РїСѓСЃС‚РѕР№ РєР»РµС‚РєРё
                     var territory = CheckTerritoryOwner(x, y, visited);
 
-                    // Если территория принадлежит одному игроку, увеличиваем счет этого игрока
-                    if (territory.Item1 == StoneColor.Black)
+                    // Р•СЃР»Рё С‚РµСЂСЂРёС‚РѕСЂРёСЏ РїСЂРёРЅР°РґР»РµР¶РёС‚ РѕРґРЅРѕРјСѓ РёРіСЂРѕРєСѓ, СѓРІРµР»РёС‡РёРІР°РµРј СЃС‡РµС‚ СЌС‚РѕРіРѕ РёРіСЂРѕРєР°
+                    if (territory.Color == StoneColor.Black)
                         blackTerritory += territory.Item2;
-                    else if (territory.Item1 == StoneColor.White)
+                    else if (territory.Color == StoneColor.White)
                         whiteTerritory += territory.Item2;
                 }
             }
         }
 
-        // Подсчитываем общий счет
+        // РџРѕРґСЃС‡РёС‚С‹РІР°РµРј РѕР±С‰РёР№ СЃС‡РµС‚
         double blackScore =   blackTerritory;
-        double whiteScore = whiteTerritory + Komi; // Коми добавляем для белых
+        double whiteScore = whiteTerritory + Komi; // РљРѕРјРё РґРѕР±Р°РІР»СЏРµРј РґР»СЏ Р±РµР»С‹С…
 
         return (blackScore, whiteScore);
     }
 
-    // Метод для проверки, какая сторона окружила пустую клетку (черные или белые)
-    // Возвращает пару: (StoneColor, кол-во клеток территории)
-    private (StoneColor?, int) CheckTerritoryOwner(int x, int y, bool[,] visited)
+    // РњРµС‚РѕРґ РґР»СЏ РїСЂРѕРІРµСЂРєРё, РєР°РєР°СЏ СЃС‚РѕСЂРѕРЅР° РѕРєСЂСѓР¶РёР»Р° РїСѓСЃС‚СѓСЋ РєР»РµС‚РєСѓ (С‡РµСЂРЅС‹Рµ РёР»Рё Р±РµР»С‹Рµ)
+    // Р’РѕР·РІСЂР°С‰Р°РµС‚ РїР°СЂСѓ: (StoneColor, РєРѕР»-РІРѕ РєР»РµС‚РѕРє С‚РµСЂСЂРёС‚РѕСЂРёРё)
+    private (StoneColor? Color, int) CheckTerritoryOwner(int x, int y, bool[,] visited)
     {
         var queue = new Queue<Tuple<int, int>>();
         queue.Enqueue(Tuple.Create(x, y));
@@ -110,7 +110,7 @@ public class Board : INotifyPropertyChanged
         HashSet<StoneColor> surroundingColors = new HashSet<StoneColor>();
         List<Tuple<int, int>> territoryCells = new List<Tuple<int, int>>();
 
-        // Направления для смежных клеток (вверх, вниз, влево, вправо)
+        // РќР°РїСЂР°РІР»РµРЅРёСЏ РґР»СЏ СЃРјРµР¶РЅС‹С… РєР»РµС‚РѕРє (РІРІРµСЂС…, РІРЅРёР·, РІР»РµРІРѕ, РІРїСЂР°РІРѕ)
         int[] dx = { -1, 1, 0, 0 };
         int[] dy = { 0, 0, -1, 1 };
 
@@ -119,28 +119,28 @@ public class Board : INotifyPropertyChanged
             var current = queue.Dequeue();
             int cx = current.Item1;
             int cy = current.Item2;
-            territoryCells.Add(current); // Добавляем эту клетку в территорию
+            territoryCells.Add(current); // Р”РѕР±Р°РІР»СЏРµРј СЌС‚Сѓ РєР»РµС‚РєСѓ РІ С‚РµСЂСЂРёС‚РѕСЂРёСЋ
 
-            // Проверяем соседей текущей клетки
+            // РџСЂРѕРІРµСЂСЏРµРј СЃРѕСЃРµРґРµР№ С‚РµРєСѓС‰РµР№ РєР»РµС‚РєРё
             for (int i = 0; i < 4; ++i)
             {
                 int nx = cx + dx[i];
                 int ny = cy + dy[i];
 
-                // Если сосед выходит за пределы доски, пропускаем его
+                // Р•СЃР»Рё СЃРѕСЃРµРґ РІС‹С…РѕРґРёС‚ Р·Р° РїСЂРµРґРµР»С‹ РґРѕСЃРєРё, РїСЂРѕРїСѓСЃРєР°РµРј РµРіРѕ
                 if (nx < 0 || nx >= _size || ny < 0 || ny >= _size)
                     continue;
 
-                // Если сосед уже посещен, пропускаем его
+                // Р•СЃР»Рё СЃРѕСЃРµРґ СѓР¶Рµ РїРѕСЃРµС‰РµРЅ, РїСЂРѕРїСѓСЃРєР°РµРј РµРіРѕ
                 if (visited[nx, ny])
                     continue;
 
-                // Если сосед — это камень, добавляем его цвет в множество
+                // Р•СЃР»Рё СЃРѕСЃРµРґ вЂ” СЌС‚Рѕ РєР°РјРµРЅСЊ, РґРѕР±Р°РІР»СЏРµРј РµРіРѕ С†РІРµС‚ РІ РјРЅРѕР¶РµСЃС‚РІРѕ  
                 if (_field[nx][ny] != null)
                 {
                     surroundingColors.Add(_field[nx][ny].Status);
                 }
-                // Если сосед — пустая клетка, добавляем ее в очередь для дальнейшей проверки
+                // Р•СЃР»Рё СЃРѕСЃРµРґ вЂ” РїСѓСЃС‚Р°СЏ РєР»РµС‚РєР°, РґРѕР±Р°РІР»СЏРµРј РµРµ РІ РѕС‡РµСЂРµРґСЊ РґР»СЏ РґР°Р»СЊРЅРµР№С€РµР№ РїСЂРѕРІРµСЂРєРё
                 else
                 {
                     visited[nx, ny] = true;
@@ -149,13 +149,13 @@ public class Board : INotifyPropertyChanged
             }
         }
 
-        // Если территория окружена камнями одного цвета, возвращаем этот цвет и количество клеток в территории
+        // Р•СЃР»Рё С‚РµСЂСЂРёС‚РѕСЂРёСЏ РѕРєСЂСѓР¶РµРЅР° РєР°РјРЅСЏРјРё РѕРґРЅРѕРіРѕ С†РІРµС‚Р°, РІРѕР·РІСЂР°С‰Р°РµРј СЌС‚РѕС‚ С†РІРµС‚ Рё РєРѕР»РёС‡РµСЃС‚РІРѕ РєР»РµС‚РѕРє РІ С‚РµСЂСЂРёС‚РѕСЂРёРё
         if (surroundingColors.Count == 1)
         {
             return (surroundingColors.First(), territoryCells.Count);
         }
 
-        // Если территория окружена камнями разных цветов или не окружена камнями, то не является территорией
+        // Р•СЃР»Рё С‚РµСЂСЂРёС‚РѕСЂРёСЏ РѕРєСЂСѓР¶РµРЅР° РєР°РјРЅСЏРјРё СЂР°Р·РЅС‹С… С†РІРµС‚РѕРІ РёР»Рё РЅРµ РѕРєСЂСѓР¶РµРЅР° РєР°РјРЅСЏРјРё, С‚Рѕ РЅРµ СЏРІР»СЏРµС‚СЃСЏ С‚РµСЂСЂРёС‚РѕСЂРёРµР№
         return (null, 0);
     }
 
