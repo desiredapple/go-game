@@ -172,14 +172,16 @@ public partial class MainWindow : Window
         //Обнуление доски и ее отрисовка заново
 
         _board = new(_size);
+        
         _canvas = new Canvas
         {
             Height = 400,
             Width = 400,
             Background = Brushes.Peru,
             Margin = new Thickness(400 / (_size - 1) * 1.5)
-        };
 
+        };
+        TurnStatus.Foreground = Brushes.Black;
         DrawBoard();
         Turn();
     }
