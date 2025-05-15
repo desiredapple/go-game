@@ -65,9 +65,9 @@ public class Board : INotifyPropertyChanged
             {
                 if (_field[x][y] != null)
                 {
-                    if (_field[x][y].Status == StoneColor.Black)
+                    if (_field[x][y].Color == StoneColor.Black)
                         blackStones++;
-                    else if (_field[x][y].Status == StoneColor.White)
+                    else if (_field[x][y].Color == StoneColor.White)
                         whiteStones++;
                 }
             }
@@ -138,7 +138,7 @@ public class Board : INotifyPropertyChanged
                 // Если сосед — это камень, добавляем его цвет в множество  
                 if (_field[nx][ny] != null)
                 {
-                    surroundingColors.Add(_field[nx][ny].Status);
+                    surroundingColors.Add(_field[nx][ny].Color);
                 }
                 // Если сосед — пустая клетка, добавляем ее в очередь для дальнейшей проверки
                 else

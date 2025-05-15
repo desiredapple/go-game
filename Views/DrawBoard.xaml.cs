@@ -152,7 +152,7 @@ public partial class MainWindow : Window
                         Height = _squareW * 0.75,
                         StrokeThickness = 1
                     };
-                    if (_board[x, y].Status == StoneColor.Black)
+                    if (_board[x, y].Color == StoneColor.Black)
                         circle.Fill = Brushes.Black;
                     else
                         circle.Fill = Brushes.White;

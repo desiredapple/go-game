@@ -8,7 +8,7 @@ public static class Engine
 {
     public static void RemoveCapturedStones(Board board, Stone currentStone)
     {
-        StoneColor opponentStone = currentStone.Status == StoneColor.Black ? StoneColor.White : StoneColor.Black; //���������� ��������������� ���� �� �������
+        StoneColor opponentStone = currentStone.Color == StoneColor.Black ? StoneColor.White : StoneColor.Black; //���������� ��������������� ���� �� �������
         var stonesToRemove = new List<Tuple<int, int>>();
 
         bool[,] visited = new bool[board.Size, board.Size];
@@ -17,7 +17,7 @@ public static class Engine
         {
             for (int y = 0; y < board.Size; ++y)
             {
-                if (board[x, y] != null && board[x, y].Status == opponentStone && !visited[x, y]) //���� ������ �� ����� ���� ����� � �� �������
+                if (board[x, y] != null && board[x, y].Color == opponentStone && !visited[x, y]) //���� ������ �� ����� ���� ����� � �� �������
                 {
                     List<Tuple<int, int>> group = [];
                     if (!HasLiberties(board, x, y, opponentStone, visited, group)) //������� ���� � ����������� ������ ������� �� �������
@@ -43,7 +43,7 @@ public static class Engine
         if (board[x, y] == null)
             return true;
 
-        if (board[x, y].Status != status)
+        if (board[x, y].Color != status)
             return false;
 
         visited[x, y] = true;
