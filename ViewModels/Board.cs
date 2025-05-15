@@ -72,6 +72,11 @@ public class Board : INotifyPropertyChanged
                 }
             }
         }
+        if (blackStones == 1 && whiteStones == 0)
+        {
+            return (0, 7.5);  
+            //иначе в таком случае алгоритм сработает неправильно и выдаст blackScore = 360
+        }
 
         // 2. Подсчет территорий для пустых клеток
         for (int x = 0; x < _size; ++x)
